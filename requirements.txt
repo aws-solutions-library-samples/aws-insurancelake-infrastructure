@@ -1,0 +1,6 @@
+-e .
+aws-cdk-lib
+boto3
+cdk-nag
+pytest
+pytest-cov
