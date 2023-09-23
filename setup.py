@@ -6,7 +6,7 @@ with open("README.md") as fp:
     long_description = fp.read()
 
 setuptools.setup(
-    name="aws_cdk_insurancelake_infrastructure",
+    name="aws-insurancelake-infrastructure",
     version="2.3.0",
     description="A CDK Python app for deploying foundational infrastructure for an Insurance Lake in AWS",
     long_description=long_description,
