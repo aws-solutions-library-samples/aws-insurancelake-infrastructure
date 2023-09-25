@@ -9,7 +9,7 @@ from lib.configuration import (
     DEPLOYMENT, GITHUB_TOKEN, get_all_configurations
 )
 
-MY_GITHUB_TOKEN = ''
+MY_GITHUB_TOKEN = ''	# nosec
 
 if __name__ == '__main__':
     if not bool(MY_GITHUB_TOKEN):
