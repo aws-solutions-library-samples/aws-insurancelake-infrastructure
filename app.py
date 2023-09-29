@@ -9,7 +9,7 @@ from lib.pipeline_stack import PipelineStack
 from lib.empty_stack import EmptyStack
 from lib.code_commit_stack import CodeCommitStack
 from lib.configuration import (
-    ACCOUNT_ID, CODECOMMIT_MIRROR_REPOSITORY_NAME, DEPLOYMENT, DEV, TEST, PROD, REGION,
+    ACCOUNT_ID, CODECOMMIT_MIRROR_REPOSITORY_NAME, DEPLOYMENT, DEV, TEST, PROD, REGION, CODE_BRANCH,
     get_logical_id_prefix, get_all_configurations
 )
 from lib.tagging import tag
@@ -37,7 +37,7 @@ else:
         mirror_repository_stack = CodeCommitStack(
             app,
             f'{DEPLOYMENT}-{logical_id_prefix}InfrastructureMirrorRepository',
-            description='Insurance Lake stack for Infrastructure repository mirror (uksb-1tu7mtee2)',
+            description='InsuranceLake stack for Infrastructure repository mirror (uksb-1tu7mtee2)',
             target_environment=DEPLOYMENT,
             env=deployment_aws_env,
         )
@@ -54,9 +54,9 @@ else:
         dev_pipeline_stack = PipelineStack(
             app,
             f'{target_environment}-{logical_id_prefix}InfrastructurePipeline',
-            description=f'Insurance Lake stack for Infrastructure pipeline - {DEV} environment (uksb-1tu7mtee2)',
+            description=f'InsuranceLake stack for Infrastructure pipeline - {DEV} environment (uksb-1tu7mtee2)',
             target_environment=DEV,
-            target_branch='develop',
+            target_branch=raw_mappings[DEV][CODE_BRANCH],
             target_aws_env=dev_aws_env,
             env=deployment_aws_env,
         )
@@ -73,9 +73,9 @@ else:
         test_pipeline_stack = PipelineStack(
             app,
             f'{target_environment}-{logical_id_prefix}InfrastructurePipeline',
-            description=f'Insurance Lake stack for Infrastructure pipeline - {TEST} environment (uksb-1tu7mtee2)',
+            description=f'InsuranceLake stack for Infrastructure pipeline - {TEST} environment (uksb-1tu7mtee2)',
             target_environment=TEST,
-            target_branch='develop',
+            target_branch=raw_mappings[TEST][CODE_BRANCH],
             target_aws_env=test_aws_env,
             env=deployment_aws_env,
         )
@@ -92,9 +92,9 @@ else:
         prod_pipeline_stack = PipelineStack(
             app,
             f'{target_environment}-{logical_id_prefix}InfrastructurePipeline',
-            description=f'Insurance Lake stack for Infrastructure pipeline - {PROD} environment (uksb-1tu7mtee2)',
+            description=f'InsuranceLake stack for Infrastructure pipeline - {PROD} environment (uksb-1tu7mtee2)',
             target_environment=PROD,
-            target_branch='main',
+            target_branch=raw_mappings[PROD][CODE_BRANCH],
             target_aws_env=prod_aws_env,
             env=deployment_aws_env,
         )

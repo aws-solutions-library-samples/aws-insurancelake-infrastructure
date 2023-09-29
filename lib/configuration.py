@@ -22,6 +22,7 @@ REGION = 'region'
 VPC_CIDR = 'vpc_cidr'
 LOGICAL_ID_PREFIX = 'logical_id_prefix'
 RESOURCE_NAME_PREFIX = 'resource_name_prefix'
+CODE_BRANCH = 'code_branch'
 
 # Secrets Manager Inputs
 GITHUB_TOKEN = 'github_token'
@@ -89,32 +90,34 @@ def get_local_configuration(environment: str, local_mapping: dict = None) -> dic
                 # Use only if you do NOT use Github or CodeCommit and need to mirror your repository
                 # Name your CodeCommit mirror repo here (recommend matching your external repo)
                 # Leave empty if you use Github or your repository is in CodeCommit already
-                CODECOMMIT_MIRROR_REPOSITORY_NAME: 'aws-cdk-insurancelake-infrastructure',
+                CODECOMMIT_MIRROR_REPOSITORY_NAME: 'aws-insurancelake-infrastructure',
 
                 # This is used in the Logical Id of CloudFormation resources.
                 # We recommend Capital case for consistency, e.g. DataLakeCdkBlog
                 LOGICAL_ID_PREFIX: 'InsuranceLake',
 
-                # Important: This is used in resources that must be **globally** unique!
+                # Important: This is used as a prefix for resources that must be **globally** unique!
                 # Resource names may only contain alphanumeric characters, hyphens, and cannot contain trailing hyphens.
                 # S3 bucket names from this application must be under the 63 character bucket name limit
-                # E.g. unique-identifier-data-lake
                 RESOURCE_NAME_PREFIX: 'insurancelake',
             },
             DEV: {
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
-                # VPC_CIDR: '10.20.0.0/24'
+                # VPC_CIDR: '10.20.0.0/24',
+                CODE_BRANCH: 'develop',
             },
             TEST: {
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
-                # VPC_CIDR: '10.10.0.0/24'
+                # VPC_CIDR: '10.10.0.0/24',
+                CODE_BRANCH: 'test',
             },
             PROD: {
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
-                # VPC_CIDR: '10.0.0.0/24'
+                # VPC_CIDR: '10.0.0.0/24',
+                CODE_BRANCH: 'master',
             }
         }
 
@@ -127,9 +130,6 @@ def get_local_configuration(environment: str, local_mapping: dict = None) -> dic
                         'and cannot contain leading or trailing hyphens')
 
     for each_env in local_mapping:
-        # NOTE: Resource with longest bucket name is from the ETL code 
-        #       base, but we will assume the user wants to have a 
-        #       consistent resource prefix across all stacks
         longest_bucket_name = \
             f'{each_env}-{resource_prefix}-{local_mapping[each_env][ACCOUNT_ID]}-{local_mapping[each_env][REGION]}-access-logs'
         if len(longest_bucket_name) > MAX_S3_BUCKET_NAME_LENGTH:

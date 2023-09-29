@@ -56,7 +56,7 @@ class CodeCommitStack(cdk.Stack):
         repo = CodeCommit.Repository(
             self, 
             f'{target_environment}{logical_id_prefix}InfrastructureMirrorRepository',
-            description='Insurance Lake Infrastructure source code repository mirror for CodePipeline integration',
+            description='InsuranceLake Infrastructure source code repository mirror for CodePipeline integration',
             repository_name=self.mappings[target_environment][CODECOMMIT_MIRROR_REPOSITORY_NAME],
         )
 

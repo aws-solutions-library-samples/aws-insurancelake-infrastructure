@@ -136,7 +136,7 @@ class S3BucketZonesStack(cdk.Stack):
             f'{self.target_environment}{logical_id_prefix}KmsKey',
             # Gives account users admin access to the key
             admins=[iam.AccountPrincipal(self.account)],
-            description='Key used for encrypting Insurance Lake S3 Buckets, DynamoDB Tables, SNS Topics, Glue Job resources',
+            description='Key used for encrypting InsuranceLake S3 Buckets, DynamoDB Tables, SNS Topics, Glue Job resources',
             removal_policy=self.removal_policy,
             enable_key_rotation=True,
             pending_window=cdk.Duration.days(30),

@@ -1,14 +1,14 @@
 # InsuranceLake Infrastructure with CDK Pipeline
 
-The Insurance Lake solution is comprised of two codebases: [Infrastructure](./) and [ETL](https://github.com/aws-samples/aws-insurancelake-etl). This codebase and the documentation that follows is specific to the Infrastructure. For more comprehensive documentation, including several ways to get started quickly, refer to the [InsuranceLake ETL with CDK Pipeline README](https://github.com/aws-samples/aws-insurancelake-etl/blob/main/README.md).
+The InsuranceLake solution is comprised of two codebases: [Infrastructure](https://github.com/aws-samples/aws-insurancelake-infrastructure) and [ETL](https://github.com/aws-samples/aws-insurancelake-etl). This codebase and the documentation that follows is specific to the Infrastructure. For more comprehensive documentation, including several ways to get started quickly, refer to the [InsuranceLake ETL with CDK Pipeline README](https://github.com/aws-samples/aws-insurancelake-etl/blob/main/README.md).
 
-This solution helps you deploy ETL processes and data storage resources to create an Insurance Lake. It uses Amazon S3 buckets for storage, [AWS Glue](https://docs.aws.amazon.com/glue/) for data transformation, and [AWS CDK Pipelines](https://docs.aws.amazon.com/cdk/latest/guide/cdk_pipeline.html). The solution is originally based on the AWS blog [Deploy data lake ETL jobs using CDK Pipelines](https://aws.amazon.com/blogs/devops/deploying-data-lake-etl-jobs-using-cdk-pipelines/).
+This solution helps you deploy ETL processes and data storage resources to create an InsuranceLake. It uses Amazon S3 buckets for storage, [AWS Glue](https://docs.aws.amazon.com/glue/) for data transformation, and [AWS CDK Pipelines](https://docs.aws.amazon.com/cdk/latest/guide/cdk_pipeline.html). The solution is originally based on the AWS blog [Deploy data lake ETL jobs using CDK Pipelines](https://aws.amazon.com/blogs/devops/deploying-data-lake-etl-jobs-using-cdk-pipelines/).
 
 [CDK Pipelines](https://docs.aws.amazon.com/cdk/api/latest/docs/pipelines-readme.html) is a construct library module for painless continuous delivery of CDK applications. CDK stands for Cloud Development Kit. It is an open source software development framework to define your cloud application resources using familiar programming languages.
 
 Specifically, this solution helps you to:
 
-1. Deploy a 3 Cs (Collect, Cleanse, Consume) Insurance Lake
+1. Deploy a 3 Cs (Collect, Cleanse, Consume) InsuranceLake
 1. Deploy ETL jobs needed make common insurance industry data souces available in a data lake
 1. Use pySpark Glue jobs and supporting resoures to perform data transforms in a modular approach
 1. Build and replicate the application in multiple environments quickly
@@ -21,7 +21,7 @@ Specifically, this solution helps you to:
 ## Contents
 
 * [Architecture](#architecture)
-  * [Insurance Lake](#insurance-lake)
+  * [InsuranceLake](#insurance-lake)
   * [Infrastructure](#infrastructure)
 * [Codebase](#codebase)
   * [Source code Structure](#source-code-structure)
@@ -33,16 +33,16 @@ Specifically, this solution helps you to:
 
 ## Architecture
 
-In this section we talk about the overall Insurance Lake architecture and the infrastructure component.
+In this section we talk about the overall InsuranceLake architecture and the infrastructure component.
 
-### Insurance Lake
+### InsuranceLake
 
 As shown in the figure below, we use Amazon S3 for storage. We use three S3 buckets:
    1. Collect bucket to store raw data in its original format
    1. Cleanse/Curate bucket to store the data that meets the quality and consistency requirements of the lake
    1. Consume bucket for data that is used by analysts and data consumers of the lake (e.g. Amazon Quicksight, Amazon Sagemaker)
 
-The Insurance Lake is designed to support a number of source systems with different file formats and data partitions. To demonstrate, we have provided a CSV parser and sample data files for a source system with two data tables, which are uploaded to the Collect bucket.
+InsuranceLake is designed to support a number of source systems with different file formats and data partitions. To demonstrate, we have provided a CSV parser and sample data files for a source system with two data tables, which are uploaded to the Collect bucket.
 
 We use AWS Lambda and AWS Step Functions for orchestration and scheduling of ETL workloads. We then use AWS Glue with pySpark for ETL and data cataloging, Amazon DynamoDB for transformation persistence, Amazon Athena for interactive queries and analysis. We use various AWS services for logging, monitoring, security, authentication, authorization, notification, build, and deployment.
 
@@ -94,11 +94,11 @@ Table below explains how this source code structured:
 
 This repository has the following automation scripts to complete steps before the deployment:
 
-  | # | Script    | Purpose  |
-  | --|-----------| -------------|
-  | 1 | [bootstrap_deployment_account.sh](./lib/prerequisites/bootstrap_deployment_account.sh) | Used to bootstrap deployment account |
-  | 2 | [bootstrap_target_account.sh](./lib/prerequisites/bootstrap_target_account.sh) | Used to bootstrap target environments for example dev, test, and production. |
-  | 3 | [configure_account_secrets.py](./lib/prerequisites/configure_account_secrets.py) | Used to configure account secrets for GitHub access token. |
+  | Script    | Purpose  |
+  |-----------| -------------|
+  | [bootstrap_deployment_account.sh](./lib/prerequisites/bootstrap_deployment_account.sh) | Used to bootstrap deployment account |
+  | [bootstrap_target_account.sh](./lib/prerequisites/bootstrap_target_account.sh) | Used to bootstrap target environments for example dev, test, and production. |
+  | [configure_account_secrets.py](./lib/prerequisites/configure_account_secrets.py) | Used to configure account secrets for GitHub access token. |
 
 ---
 

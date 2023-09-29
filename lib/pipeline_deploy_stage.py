@@ -40,7 +40,7 @@ class PipelineDeployStage(cdk.Stage):
             vpc_stack = VpcStack(
                 self,
                 f'{logical_id_prefix}InfrastructureVpc',
-                description='Insurance Lake stack for networking resources (uksb-1tu7mtee2)',
+                description='InsuranceLake stack for networking resources (uksb-1tu7mtee2)',
                 target_environment=target_environment,
                 env=env,
                 **kwargs,
@@ -50,7 +50,7 @@ class PipelineDeployStage(cdk.Stage):
         bucket_stack = S3BucketZonesStack(
             self,
             f'{logical_id_prefix}InfrastructureS3BucketZones',
-            description='Insurance Lake stack for three S3 buckets used to store data (uksb-1tu7mtee2)',
+            description='InsuranceLake stack for three S3 buckets used to store data (uksb-1tu7mtee2)',
             target_environment=target_environment,
             deployment_account_id=deployment_account_id,
             env=env,

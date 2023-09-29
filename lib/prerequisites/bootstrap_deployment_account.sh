@@ -8,9 +8,10 @@ if aws sts get-caller-identity > /dev/null; then
     export IS_BOOTSTRAP=1
     echo "AWS_PROFILE: ${AWS_PROFILE}"
     echo "Default region: $(aws configure get region)"
+    echo "User-supplied arguments: $*"
     read -r -p "Are you sure you want to bootstrap $(aws sts get-caller-identity)? (y/n)" response
     if [[ "$response" =~ ^([yY][eE][sS]|[yY])$ ]]; then
-        cdk bootstrap || (unset IS_BOOTSTRAP && unset CDK_NEW_BOOTSTRAP)
+        cdk bootstrap $* || (unset IS_BOOTSTRAP && unset CDK_NEW_BOOTSTRAP)
         unset IS_BOOTSTRAP && unset CDK_NEW_BOOTSTRAP
     fi
 else
