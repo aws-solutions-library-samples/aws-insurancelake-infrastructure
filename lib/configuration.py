@@ -117,7 +117,7 @@ def get_local_configuration(environment: str, local_mapping: dict = None) -> dic
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
                 # VPC_CIDR: '10.0.0.0/24',
-                CODE_BRANCH: 'master',
+                CODE_BRANCH: 'main',
             }
         }
 

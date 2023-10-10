@@ -143,6 +143,7 @@ class S3BucketZonesStack(cdk.Stack):
             alias=f'{self.target_environment.lower()}-{resource_name_prefix}-kms-key',
         )
         # Gives account users and deployment account users access to use the key
+        # for deploying and changing S3 buckets
         s3_kms_key.add_to_resource_policy(
             iam.PolicyStatement(
                 sid='DeploymentAndEnvUserKeyAccess',
@@ -161,11 +162,15 @@ class S3BucketZonesStack(cdk.Stack):
             )
         )
         # SNS Topic will be created in the ETL stack and used for encryption
+        # KMS Grant policy allows subscribers to read encrypted events
         # TODO: Consider a separate key for the ETL stack encryption
         s3_kms_key.add_to_resource_policy(
             iam.PolicyStatement(
                 sid='SNSEncryptedTopicKeyAccess',
-                principals=[ iam.AnyPrincipal() ],
+                principals=[
+                    iam.AccountPrincipal(self.account),
+                    iam.AccountPrincipal(deployment_account_id),
+                ],
                 actions=[
                     'kms:Decrypt',
                     'kms:GenerateDataKey*'
@@ -178,10 +183,14 @@ class S3BucketZonesStack(cdk.Stack):
                 }
             )
         )
+        # KMS Grant policy allows log readers to read encrypted logs
         s3_kms_key.add_to_resource_policy(
             iam.PolicyStatement(
                 sid='LogsEncryptedLogsKeyAccess',
-                principals=[ iam.AnyPrincipal() ],
+                principals=[
+                    iam.AccountPrincipal(self.account),
+                    iam.AccountPrincipal(deployment_account_id),
+                ],
                 actions=[
                     'kms:Decrypt',
                     'kms:GenerateDataKey*'

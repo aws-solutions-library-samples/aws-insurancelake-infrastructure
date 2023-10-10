@@ -100,16 +100,6 @@ class PipelineStack(cdk.Stack):
                         f'arn:aws:secretsmanager:{self.region}:{self.account}:secret:/InsuranceLake/*',
                     ],
                 ),
-                iam.PolicyStatement(
-                    sid='InfrastructurePipelineSTSAssumeRolePolicy',
-                    effect=iam.Effect.ALLOW,
-                    actions=[
-                        'sts:AssumeRole',
-                    ],
-                    resources=[
-                        '*',
-                    ],
-                ),
             ]
         )
 

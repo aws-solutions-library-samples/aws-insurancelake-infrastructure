@@ -89,6 +89,7 @@ class VpcStack(cdk.Stack):
             f'{target_environment}{self.logical_id_prefix}SharedIngressSecurityGroup',
             vpc=self.vpc,
             description='Shared Security Group for Data Lake resources with self-referencing ingress rule.',
+            allow_all_outbound=True,    # Change to False to explicityly allow outbound traffic
         )
         self.shared_security_group.add_ingress_rule(
             peer=self.shared_security_group,
