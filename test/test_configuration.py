@@ -8,8 +8,7 @@ from lib.configuration import (
     AVAILABILITY_ZONE_1, AVAILABILITY_ZONE_2, AVAILABILITY_ZONE_3,
 	ROUTE_TABLE_1, ROUTE_TABLE_2, ROUTE_TABLE_3,
     SHARED_SECURITY_GROUP_ID, SUBNET_ID_1, SUBNET_ID_2, SUBNET_ID_3, VPC_ID,
-	S3_KMS_KEY, S3_PURPOSE_BUILT_BUCKET,
-	ACCOUNT_ID, REGION, VPC_CIDR,
+	S3_KMS_KEY, S3_PURPOSE_BUILT_BUCKET, ACCOUNT_ID, REGION,
 	ENVIRONMENT, DEPLOYMENT, DEV, PROD, TEST, RESOURCE_NAME_PREFIX
 )
 
@@ -102,7 +101,7 @@ def test_get_logical_id_prefix_returns_string(monkeypatch):
 	monkeypatch.setattr(configuration.boto3, 'client', mock_boto3_client)
 
 	test_logic_id_prefix = configuration.get_logical_id_prefix()
-	assert type(test_logic_id_prefix) == str
+	assert isinstance(test_logic_id_prefix, str)
 	assert len(test_logic_id_prefix) > 0
 
 
@@ -111,5 +110,5 @@ def test_get_resource_name_prefix_returns_string(monkeypatch):
 	monkeypatch.setattr(configuration.boto3, 'client', mock_boto3_client)
 
 	test_resource_name_prefix = configuration.get_resource_name_prefix()
-	assert type(test_resource_name_prefix) == str
+	assert isinstance(test_resource_name_prefix, str)
 	assert len(test_resource_name_prefix) > 0

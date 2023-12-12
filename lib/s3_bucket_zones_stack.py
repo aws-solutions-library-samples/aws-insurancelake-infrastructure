@@ -5,7 +5,6 @@ from constructs import Construct
 import aws_cdk.aws_iam as iam
 import aws_cdk.aws_kms as kms
 import aws_cdk.aws_s3 as s3
-from cdk_nag import NagSuppressions
 
 from .configuration import (
     PROD, S3_ACCESS_LOG_BUCKET, S3_CONFORMED_BUCKET, S3_KMS_KEY, S3_PURPOSE_BUILT_BUCKET, S3_RAW_BUCKET, TEST,
@@ -168,19 +167,13 @@ class S3BucketZonesStack(cdk.Stack):
             iam.PolicyStatement(
                 sid='SNSEncryptedTopicKeyAccess',
                 principals=[
-                    iam.AccountPrincipal(self.account),
-                    iam.AccountPrincipal(deployment_account_id),
+                    iam.ServicePrincipal('sns.amazonaws.com'),
                 ],
                 actions=[
                     'kms:Decrypt',
                     'kms:GenerateDataKey*'
                 ],
                 resources=['*'],
-                conditions={'StringLike': {
-                        'kms:CallerAccount': self.account,
-                        'kms:ViaService': f'sns.{self.region}.amazonaws.com',
-                    },
-                }
             )
         )
         # KMS Grant policy allows log readers to read encrypted logs
@@ -188,19 +181,13 @@ class S3BucketZonesStack(cdk.Stack):
             iam.PolicyStatement(
                 sid='LogsEncryptedLogsKeyAccess',
                 principals=[
-                    iam.AccountPrincipal(self.account),
-                    iam.AccountPrincipal(deployment_account_id),
+                    iam.ServicePrincipal('logs.amazonaws.com'),
                 ],
                 actions=[
                     'kms:Decrypt',
                     'kms:GenerateDataKey*'
                 ],
                 resources=['*'],
-                conditions={'StringLike': {
-                        'kms:CallerAccount': self.account,
-                        'kms:ViaService': f'logs.{self.region}.amazonaws.com',
-                    },
-                }
             )
         )
         return s3_kms_key
@@ -341,12 +328,5 @@ class S3BucketZonesStack(cdk.Stack):
                 access_logs_intelligent_tiering
             ],
         )
-
-        NagSuppressions.add_resource_suppressions(access_logs_bucket, [
-            {
-                'id': 'AwsSolutions-S1',
-                'reason': 'Target bucket for server access logs should not have server access logs enabled'
-            },
-        ])
 
         return access_logs_bucket
