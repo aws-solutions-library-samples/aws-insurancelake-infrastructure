@@ -1,4 +1,9 @@
-# InsuranceLake Infrastructure with CDK Pipeline
+<!--
+  Title: AWS InsuranceLake
+  Description: Serverless data lake solution accelerator and reference architecture fit for the insurance industry built on AWS
+  Author: cvisi@amazon.com
+  -->
+# InsuranceLake Infrastructure
 
 The InsuranceLake solution is comprised of two codebases: [Infrastructure](https://github.com/aws-samples/aws-insurancelake-infrastructure) and [ETL](https://github.com/aws-samples/aws-insurancelake-etl). This codebase and the documentation that follows is specific to the Infrastructure. For more comprehensive documentation, including several ways to get started quickly, refer to the [InsuranceLake ETL with CDK Pipeline README](https://github.com/aws-samples/aws-insurancelake-etl/blob/main/README.md).
 
@@ -15,6 +20,8 @@ Specifically, this solution helps you to:
 1. Deploy ETL jobs from a central deployment account to multiple AWS environments such as Dev, Test, and Prod
 1. Leverage the benefit of self-mutating feature of CDK Pipelines; specifically, the pipeline itself is infrastructure as code and can be changed as part of the deployment
 1. Increase the speed of prototyping, testing, and deployment of new ETL jobs
+
+![InsuranceLake High Level Architecture](./resources/insurancelake-highlevel-architecture.png)
 
 ---
 

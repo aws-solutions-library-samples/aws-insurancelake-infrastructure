@@ -7,7 +7,7 @@ with open("README.md") as fp:
 
 setuptools.setup(
     name="aws-insurancelake-infrastructure",
-    version="3.1.0",
+    version="3.2",
     description="A CDK Python app for deploying foundational infrastructure for InsuranceLake in AWS",
     long_description=long_description,
     long_description_content_type="text/markdown",
