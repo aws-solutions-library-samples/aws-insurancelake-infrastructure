@@ -30,7 +30,7 @@ class S3BucketZonesStack(cdk.Stack):
         target_environment
             The target environment for stacks in the deploy stage
         deployment_account_id
-            The AWS account ID for the deployment account
+            AWS account ID of the deployment account used to grant access to KMS keys
         kwargs: optional
             Optional keyword arguments to pass up to parent Stack class
         """
@@ -40,10 +40,19 @@ class S3BucketZonesStack(cdk.Stack):
         mappings = get_environment_configuration(target_environment)
         logical_id_prefix = get_logical_id_prefix()
         resource_name_prefix = get_resource_name_prefix()
-        if (target_environment == PROD or target_environment == TEST):
+
+        # Default values for Dev
+        self.removal_policy = cdk.RemovalPolicy.DESTROY
+        self.object_expiration_days = cdk.Duration.days(60)
+        self.noncurrent_version_expiration_days = cdk.Duration.days(30)
+        if (target_environment == PROD):
             self.removal_policy = cdk.RemovalPolicy.RETAIN
-        else:
-            self.removal_policy = cdk.RemovalPolicy.DESTROY
+            self.object_expiration_days = cdk.Duration.days(3650)
+            self.noncurrent_version_expiration_days = cdk.Duration.days(180)
+        if (target_environment == TEST):
+            self.removal_policy = cdk.RemovalPolicy.RETAIN
+            self.object_expiration_days = cdk.Duration.days(365)
+            self.noncurrent_version_expiration_days = cdk.Duration.days(90)
 
         s3_kms_key = self.create_kms_key(
             deployment_account_id,
@@ -219,16 +228,16 @@ class S3BucketZonesStack(cdk.Stack):
         lifecycle_rules = [
             s3.LifecycleRule(
                 enabled=True,
-                expiration=cdk.Duration.days(60),
-                noncurrent_version_expiration=cdk.Duration.days(30),
+                expiration=self.object_expiration_days,
+                noncurrent_version_expiration=self.noncurrent_version_expiration_days,
             )
         ]
         if self.target_environment == PROD:
             lifecycle_rules = [
                 s3.LifecycleRule(
                     enabled=True,
-                    expiration=cdk.Duration.days(2555),
-                    noncurrent_version_expiration=cdk.Duration.days(90),
+                    expiration=self.object_expiration_days,
+                    noncurrent_version_expiration=self.noncurrent_version_expiration_days,
                     transitions=[
                         s3.Transition(
                             storage_class=s3.StorageClass.GLACIER,
@@ -255,7 +264,7 @@ class S3BucketZonesStack(cdk.Stack):
             server_access_logs_bucket=access_logs_bucket,
             server_access_logs_prefix=f'{bucket_name}-',
         )
-        policy_document_statements = [
+        bucket.add_to_resource_policy(
             iam.PolicyStatement(
                 sid='OnlyAllowSecureTransport',
                 effect=iam.Effect.DENY,
@@ -267,23 +276,7 @@ class S3BucketZonesStack(cdk.Stack):
                 resources=[f'{bucket.bucket_arn}/*'],
                 conditions={'Bool': {'aws:SecureTransport': 'false'}}
             )
-        ]
-        # Prevents user deletion of buckets
-        if self.target_environment == PROD or self.target_environment == TEST:
-            policy_document_statements.append(
-                iam.PolicyStatement(
-                    sid='BlockUserDeletionOfBucket',
-                    effect=iam.Effect.DENY,
-                    principals=[iam.AnyPrincipal()],
-                    actions=[
-                        's3:DeleteBucket',
-                    ],
-                    resources=[bucket.bucket_arn],
-                    conditions={'StringLike': {'aws:userId': f'arn:aws:iam::{self.account}:user/*'}}
-                )
-            )
-        for statement in policy_document_statements:
-            bucket.add_to_resource_policy(statement)
+        )
 
         return bucket
 

@@ -1,0 +1,4 @@
+-e .
+-r requirements.txt
+pytest
+pytest-cov

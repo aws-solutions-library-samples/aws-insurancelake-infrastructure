@@ -1,11 +1,11 @@
 <!--
   Title: AWS InsuranceLake
-  Description: Serverless data lake solution accelerator and reference architecture fit for the insurance industry built on AWS
+  Description: Serverless modern data lake solution and reference architecture fit for the insurance industry built on AWS
   Author: cvisi@amazon.com
   -->
 # InsuranceLake Infrastructure
 
-The InsuranceLake solution is comprised of two codebases: [Infrastructure](https://github.com/aws-samples/aws-insurancelake-infrastructure) and [ETL](https://github.com/aws-samples/aws-insurancelake-etl). This codebase and the documentation that follows is specific to the Infrastructure. For more comprehensive documentation, including several ways to get started quickly, refer to the [InsuranceLake ETL with CDK Pipeline README](https://github.com/aws-samples/aws-insurancelake-etl/blob/main/README.md).
+The InsuranceLake solution is comprised of two codebases: [Infrastructure](https://github.com/aws-solutions-library-samples/aws-insurancelake-infrastructure) and [ETL](https://github.com/aws-solutions-library-samples/aws-insurancelake-etl). This codebase and the documentation that follows is specific to the Infrastructure. For more comprehensive documentation, including several ways to get started quickly, refer to the [InsuranceLake ETL with CDK Pipeline README](https://github.com/aws-solutions-library-samples/aws-insurancelake-etl/blob/main/README.md).
 
 This solution helps you deploy ETL processes and data storage resources to create an InsuranceLake. It uses Amazon S3 buckets for storage, [AWS Glue](https://docs.aws.amazon.com/glue/) for data transformation, and [AWS CDK Pipelines](https://docs.aws.amazon.com/cdk/latest/guide/cdk_pipeline.html). The solution is originally based on the AWS blog [Deploy data lake ETL jobs using CDK Pipelines](https://aws.amazon.com/blogs/devops/deploying-data-lake-etl-jobs-using-cdk-pipelines/).
 
