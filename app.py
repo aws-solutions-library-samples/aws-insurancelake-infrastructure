@@ -37,7 +37,7 @@ else:
         mirror_repository_stack = CodeCommitStack(
             app,
             f'{DEPLOYMENT}-{logical_id_prefix}InfrastructureMirrorRepository',
-            description='InsuranceLake stack for Infrastructure repository mirror (SO9489)',
+            description='InsuranceLake stack for Infrastructure repository mirror (SO9489) (uksb-1tu7mtee2)',
             target_environment=DEPLOYMENT,
             env=deployment_aws_env,
         )
@@ -54,7 +54,7 @@ else:
         dev_pipeline_stack = PipelineStack(
             app,
             f'{target_environment}-{logical_id_prefix}InfrastructurePipeline',
-            description=f'InsuranceLake stack for Infrastructure pipeline - {DEV} environment (SO9489)',
+            description=f'InsuranceLake stack for Infrastructure pipeline - {DEV} environment (SO9489) (uksb-1tu7mtee2)',
             target_environment=DEV,
             target_branch=raw_mappings[DEV][CODE_BRANCH],
             target_aws_env=dev_aws_env,
@@ -73,7 +73,7 @@ else:
         test_pipeline_stack = PipelineStack(
             app,
             f'{target_environment}-{logical_id_prefix}InfrastructurePipeline',
-            description=f'InsuranceLake stack for Infrastructure pipeline - {TEST} environment (SO9489)',
+            description=f'InsuranceLake stack for Infrastructure pipeline - {TEST} environment (SO9489) (uksb-1tu7mtee2)',
             target_environment=TEST,
             target_branch=raw_mappings[TEST][CODE_BRANCH],
             target_aws_env=test_aws_env,
@@ -92,7 +92,7 @@ else:
         prod_pipeline_stack = PipelineStack(
             app,
             f'{target_environment}-{logical_id_prefix}InfrastructurePipeline',
-            description=f'InsuranceLake stack for Infrastructure pipeline - {PROD} environment (SO9489)',
+            description=f'InsuranceLake stack for Infrastructure pipeline - {PROD} environment (SO9489) (uksb-1tu7mtee2)',
             target_environment=PROD,
             target_branch=raw_mappings[PROD][CODE_BRANCH],
             target_aws_env=prod_aws_env,
