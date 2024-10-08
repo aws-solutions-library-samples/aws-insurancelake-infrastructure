@@ -53,9 +53,9 @@ As shown in the figure below, we use S3 for storage, specifically three differen
 
 InsuranceLake is designed to support a number of source systems with different file formats and data partitions. To demonstrate, we have provided a CSV parser and sample data files for a source system with two data tables, which are uploaded to the Collect bucket.
 
-We use AWS Lambda and AWS Step Functions for orchestration and scheduling of ETL workloads. We then use AWS Glue with pySpark for ETL and data cataloging, Amazon DynamoDB for transformation persistence, Amazon Athena for interactive queries and analysis. We use various AWS services for logging, monitoring, security, authentication, authorization, notification, build, and deployment.
+We use AWS Lambda and AWS Step Functions for orchestration and scheduling of ETL workloads. We then use AWS Glue with PySpark for ETL and data cataloging, Amazon DynamoDB for transformation persistence, Amazon Athena for interactive queries and analysis. We use various AWS services for logging, monitoring, security, authentication, authorization, notification, build, and deployment.
 
-**Note:** [AWS Lake Formation](https://aws.amazon.com/lake-formation/) is a service that makes it easy to set up a secure data lake in days. [Amazon QuickSight](https://aws.amazon.com/quicksight/) is a scalable, serverless, embeddable, machine learning-powered business intelligence (BI) service built for the cloud. These two services are not used in this solution but can be added.
+**Note:** [AWS Lake Formation](https://aws.amazon.com/lake-formation/) is a service that makes it easy to set up a secure data lake in days. [Amazon QuickSight](https://aws.amazon.com/quicksight/) is a scalable, serverless, embeddable, machine learning-powered business intelligence (BI) service built for the cloud. [Amazon DataZone](https://aws.amazon.com/datazone/) is a data management service that makes it faster and easier for customers to catalog, discover, share, and govern data stored across AWS, on premises, and third-party sources. These three services are not used in this solution but can be added.
 
 ![Conceptual Data Lake](https://raw.githubusercontent.com/aws-solutions-library-samples/aws-insurancelake-infrastructure/main/resources/Aws-cdk-insurancelake-data_lake.png)
 
@@ -65,18 +65,19 @@ We use AWS Lambda and AWS Step Functions for orchestration and scheduling of ETL
 
 The figure below represents the infrastructure resources we provision for the data lake.
 
-1. S3 buckets for:
-    1. Collected (raw) data
-    1. Cleansed and Curated data
-    1. Consume-ready (prepared) data
-1. Optional Amazon Virtual Private Cloud (Amazon VPC)
-    1. Subnets
-    1. Security groups
-    1. Route table(s)
-    1. Amazon VPC endpoints
-1. Supporting services, such as AWS Key Management Service (KMS)
-
 ![InsuranceLake Infrastructure Architecture](https://raw.githubusercontent.com/aws-solutions-library-samples/aws-insurancelake-infrastructure/main/resources/Aws-cdk-insurancelake-infra.png)
+
+* S3 buckets for:
+    * Collected (raw) data
+    * Cleansed and Curated data
+    * Consume-ready (prepared) data
+    * Server access logging
+* Optional Amazon Virtual Private Cloud (Amazon VPC)
+    * Subnets
+    * Security groups
+    * Route table(s)
+    * Amazon VPC endpoints
+* Supporting services, such as AWS Key Management Service (KMS)
 
 ---
 
@@ -115,15 +116,15 @@ The table below lists the automation scripts to complete steps before the deploy
 
 The following people are involved in the design, architecture, development, testing, and review of this solution:
 
-1. **Cory Visi**, Senior Solutions Architect, Amazon Web Services
-1. **Ratnadeep Bardhan Roy**, Senior Solutions Architect, Amazon Web Services
-1. **Jose Guay**, Enterprise Support, Amazon Web Services
-1. **Isaiah Grant**, Cloud Consultant, 2nd Watch, Inc.
-1. **Muhammad Zahid Ali**, Data Architect, Amazon Web Services
-1. **Ravi Itha**, Senior Data Architect, Amazon Web Services
-1. **Justiono Putro**, Cloud Infrastructure Architect, Amazon Web Services
-1. **Mike Apted**, Principal Solutions Architect, Amazon Web Services
-1. **Nikunj Vaidya**, Senior DevOps Specialist, Amazon Web Services
+* **Cory Visi**, Senior Solutions Architect, Amazon Web Services
+* **Ratnadeep Bardhan Roy**, Senior Solutions Architect, Amazon Web Services
+* **Jose Guay**, Enterprise Support, Amazon Web Services
+* **Isaiah Grant**, Cloud Consultant, 2nd Watch, Inc.
+* **Muhammad Zahid Ali**, Data Architect, Amazon Web Services
+* **Ravi Itha**, Senior Data Architect, Amazon Web Services
+* **Justiono Putro**, Cloud Infrastructure Architect, Amazon Web Services
+* **Mike Apted**, Principal Solutions Architect, Amazon Web Services
+* **Nikunj Vaidya**, Senior DevOps Specialist, Amazon Web Services
 
 ---
 
