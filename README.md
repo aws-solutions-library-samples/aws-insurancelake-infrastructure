@@ -108,7 +108,6 @@ The table below lists the automation scripts to complete steps before the deploy
 |-----------| -------------
 | [bootstrap_deployment_account.sh](https://github.com/aws-solutions-library-samples/aws-insurancelake-infrastructure/blob/main/lib/prerequisites/bootstrap_deployment_account.sh) | Used to bootstrap deployment account
 | [bootstrap_target_account.sh](https://github.com/aws-solutions-library-samples/aws-insurancelake-infrastructure/blob/main/lib/prerequisites/bootstrap_target_account.sh) | Used to bootstrap target environments for example dev, test, and production
-| [configure_account_secrets.py](https://github.com/aws-solutions-library-samples/aws-insurancelake-infrastructure/blob/main/lib/prerequisites/configure_account_secrets.py) | Used to configure account secrets for GitHub access token
 
 ---
 
@@ -118,6 +117,7 @@ The following people are involved in the design, architecture, development, test
 
 * **Cory Visi**, Senior Solutions Architect, Amazon Web Services
 * **Ratnadeep Bardhan Roy**, Senior Solutions Architect, Amazon Web Services
+* **George Gallo**, Senior Solutions Architect, Amazon Web Services
 * **Jose Guay**, Enterprise Support, Amazon Web Services
 * **Isaiah Grant**, Cloud Consultant, 2nd Watch, Inc.
 * **Muhammad Zahid Ali**, Data Architect, Amazon Web Services

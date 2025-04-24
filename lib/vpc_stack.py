@@ -107,19 +107,23 @@ class VpcStack(cdk.Stack):
         for service_name in [ 'S3', 'DYNAMODB' ]:
             service = getattr(ec2.GatewayVpcEndpointAwsService, service_name)
             pascal_service_name = service_name.title().replace('_', '')
-            self.vpc.add_gateway_endpoint(
+            gateway_endpoint = self.vpc.add_gateway_endpoint(
                 f'{self.target_environment}{self.logical_id_prefix}{pascal_service_name}Endpoint',
                 service=service,
             )
+            cdk.Tags.of(gateway_endpoint).add('Name',
+                f'{self.target_environment}-{self.logical_id_prefix}-{pascal_service_name}')
 
-        for service_name in [ 'GLUE', 'KMS', 'SSM', 'SECRETS_MANAGER', 'STEP_FUNCTIONS' ]:
+        for service_name in [ 'GLUE', 'DATAZONE', 'KMS', 'SSM', 'SECRETS_MANAGER', 'STEP_FUNCTIONS', 'STS', 'REDSHIFT_DATA' ]:
             service = getattr(ec2.InterfaceVpcEndpointAwsService, service_name)
             pascal_service_name = service_name.title().replace('_', '')
-            self.vpc.add_interface_endpoint(
+            interface_endpoint = self.vpc.add_interface_endpoint(
                 f'{self.target_environment}{self.logical_id_prefix}{pascal_service_name}Endpoint',
                 service=service,
                 security_groups=[self.shared_security_group],
             )
+            cdk.Tags.of(interface_endpoint).add('Name',
+                f'{self.target_environment}-{self.logical_id_prefix}-{pascal_service_name}')
 
 
     def add_cloudformation_exports(self):

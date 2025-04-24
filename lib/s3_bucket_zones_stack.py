@@ -43,15 +43,15 @@ class S3BucketZonesStack(cdk.Stack):
 
         # Default values for Dev
         self.removal_policy = cdk.RemovalPolicy.DESTROY
-        self.object_expiration_days = cdk.Duration.days(60)
+        self.access_log_expiration_days = cdk.Duration.days(60)
         self.noncurrent_version_expiration_days = cdk.Duration.days(30)
         if (target_environment == PROD):
             self.removal_policy = cdk.RemovalPolicy.RETAIN
-            self.object_expiration_days = cdk.Duration.days(3650)
+            self.access_log_expiration_days = cdk.Duration.days(3650)
             self.noncurrent_version_expiration_days = cdk.Duration.days(180)
         if (target_environment == TEST):
             self.removal_policy = cdk.RemovalPolicy.RETAIN
-            self.object_expiration_days = cdk.Duration.days(365)
+            self.access_log_expiration_days = cdk.Duration.days(365)
             self.noncurrent_version_expiration_days = cdk.Duration.days(90)
 
         s3_kms_key = self.create_kms_key(
@@ -228,7 +228,6 @@ class S3BucketZonesStack(cdk.Stack):
         lifecycle_rules = [
             s3.LifecycleRule(
                 enabled=True,
-                expiration=self.object_expiration_days,
                 noncurrent_version_expiration=self.noncurrent_version_expiration_days,
             )
         ]
@@ -236,7 +235,6 @@ class S3BucketZonesStack(cdk.Stack):
             lifecycle_rules = [
                 s3.LifecycleRule(
                     enabled=True,
-                    expiration=self.object_expiration_days,
                     noncurrent_version_expiration=self.noncurrent_version_expiration_days,
                     transitions=[
                         s3.Transition(
@@ -256,10 +254,10 @@ class S3BucketZonesStack(cdk.Stack):
             bucket_name=bucket_name,
             encryption=s3.BucketEncryption.KMS,
             encryption_key=s3_kms_key,
-            lifecycle_rules=lifecycle_rules,
             public_read_access=False,
             removal_policy=self.removal_policy,
             versioned=True,
+            lifecycle_rules=lifecycle_rules,
             object_ownership=s3.ObjectOwnership.OBJECT_WRITER,
             server_access_logs_bucket=access_logs_bucket,
             server_access_logs_prefix=f'{bucket_name}-',
@@ -297,13 +295,28 @@ class S3BucketZonesStack(cdk.Stack):
         s3.Bucket
             The bucket resource that was created
         """
-        access_logs_intelligent_tiering = s3.IntelligentTieringConfiguration(
-            name='ServerAccessLogsDeepArchiveConfiguration',
-            archive_access_tier_time=cdk.Duration.days(90),
-            deep_archive_access_tier_time=cdk.Duration.days(180),
-        )
-
-        access_logs_bucket = s3.Bucket(
+        lifecycle_rules = [
+            s3.LifecycleRule(
+                enabled=True,
+                expiration=self.access_log_expiration_days,
+                noncurrent_version_expiration=self.noncurrent_version_expiration_days,
+            )
+        ]
+        if self.target_environment == PROD:
+            lifecycle_rules = [
+                s3.LifecycleRule(
+                    enabled=True,
+                    expiration=self.access_log_expiration_days,
+                    noncurrent_version_expiration=self.noncurrent_version_expiration_days,
+                    transitions=[
+                        s3.Transition(
+                            storage_class=s3.StorageClass.GLACIER,
+                            transition_after=cdk.Duration.days(180),
+                        )
+                    ]
+                )
+            ]
+        return s3.Bucket(
             self,
             id=logical_id,
             access_control=s3.BucketAccessControl.LOG_DELIVERY_WRITE,
@@ -316,10 +329,6 @@ class S3BucketZonesStack(cdk.Stack):
             public_read_access=False,
             removal_policy=self.removal_policy,
             versioned=True,
+            lifecycle_rules=lifecycle_rules,
             object_ownership=s3.ObjectOwnership.BUCKET_OWNER_PREFERRED,
-            intelligent_tiering_configurations=[
-                access_logs_intelligent_tiering
-            ],
         )
-
-        return access_logs_bucket

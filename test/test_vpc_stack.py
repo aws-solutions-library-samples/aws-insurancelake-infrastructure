@@ -45,7 +45,7 @@ def test_resource_types_and_counts(monkeypatch):
     template.resource_count_is('AWS::EC2::Subnet', 6)
     template.resource_count_is('AWS::EC2::RouteTable', 6)
     template.resource_count_is('AWS::EC2::SecurityGroup', 1)
-    template.resource_count_is('AWS::EC2::VPCEndpoint', 7)
+    template.resource_count_is('AWS::EC2::VPCEndpoint', 10)
     template.resource_count_is('AWS::Logs::LogGroup', 1)
 
 

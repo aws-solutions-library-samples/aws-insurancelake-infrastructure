@@ -9,15 +9,13 @@ DEV = 'Dev'
 TEST = 'Test'
 PROD = 'Prod'
 
-# The following constants are used to map to parameter/secret paths
+# The following constants are used to map to parameter paths
 ENVIRONMENT = 'environment'
 
 # Manual Inputs
-GITHUB_REPOSITORY_OWNER_NAME = 'github_repository_owner_name'
-GITHUB_REPOSITORY_NAME = 'github_repository_name'
-CODESTAR_CONNECTION_ARN = 'codestar_connection_arn'
-CODESTAR_REPOSITORY_OWNER_NAME = 'codestar_repository_owner_name'
-CODESTAR_REPOSITORY_NAME = 'codestar_repository_name'
+CODECONNECTIONS_ARN = 'codeconnections_arn'
+CODECONNECTIONS_REPOSITORY_OWNER_NAME = 'codeconnections_repository_owner_name'
+CODECONNECTIONS_REPOSITORY_NAME = 'codeconnections_repository_name'
 CODECOMMIT_REPOSITORY_NAME = 'codecommit_repository_name'
 CODECOMMIT_MIRROR_REPOSITORY_NAME = 'codecommit_mirror_repository_name'
 ACCOUNT_ID = 'account_id'
@@ -26,9 +24,7 @@ VPC_CIDR = 'vpc_cidr'
 LOGICAL_ID_PREFIX = 'logical_id_prefix'
 RESOURCE_NAME_PREFIX = 'resource_name_prefix'
 CODE_BRANCH = 'code_branch'
-
-# Secrets Manager Inputs
-GITHUB_TOKEN = 'github_token'
+LINEAGE='lineage'
 
 # Used in Automated Outputs
 VPC_ID = 'vpc_id'
@@ -47,7 +43,11 @@ S3_ACCESS_LOG_BUCKET = 's3_access_log_bucket'
 S3_RAW_BUCKET = 's3_raw_bucket'
 S3_CONFORMED_BUCKET = 's3_conformed_bucket'
 S3_PURPOSE_BUILT_BUCKET = 's3_purpose_built_bucket'
+CROSS_ACCOUNT_DYNAMODB_ROLE = 'cross_account_dynamodb_role'
+STATE_MACHINE = 'sfn_state_machine'
+NOTIFICATION_TOPIC = 'sns_topic'
 
+# Reference: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
 MAX_S3_BUCKET_NAME_LENGTH = 63
 
 def get_local_configuration(environment: str, local_mapping: dict = None) -> dict:
@@ -71,7 +71,7 @@ def get_local_configuration(environment: str, local_mapping: dict = None) -> dic
     dict
         Configuration for the requested environment
     """
-    active_account_id = boto3.client("sts").get_caller_identity()["Account"]
+    active_account_id = boto3.client('sts').get_caller_identity()['Account']
 
     if local_mapping is None:
         local_mapping = {
@@ -79,29 +79,21 @@ def get_local_configuration(environment: str, local_mapping: dict = None) -> dic
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
 
-                # If you use GitHub / GitHub Enterprise, this will be the organization name
-                GITHUB_REPOSITORY_OWNER_NAME: '',
+                # If you use Github, Gitlab, Bitbucket Cloud or any other supported CodeConnections
+                # provider, specify the CodeConnections ARN
+                CODECONNECTIONS_ARN: '',
 
-                # Leave empty if you do not use Github (use your forked Github repo here!)
-                GITHUB_REPOSITORY_NAME: '',
+                # CodeConections repository owner or workspace name if using CodeConnections
+                CODECONNECTIONS_REPOSITORY_OWNER_NAME: '',
 
-                # If you use Bitbucket Cloud or any other supported Codestar provider, specify the
-                # Codestar connection ARN
-                CODESTAR_CONNECTION_ARN: '',
-
-                # Codestar repository owner or workspace name if using Bitbucket Cloud
-                CODESTAR_REPOSITORY_OWNER_NAME: '',
-
-                # Leave empty if you do not use Codestar
-                CODESTAR_REPOSITORY_NAME: '',
+                # Leave empty if you do not use CodeConnections
+                CODECONNECTIONS_REPOSITORY_NAME: '',
 
                 # Use only if your repository is already in CodecCommit, otherwise leave empty!
-                # Use your CodeCommit repo name here
                 CODECOMMIT_REPOSITORY_NAME: '',
 
-                # Use only if you do NOT use Github or CodeCommit and need to mirror your repository
                 # Name your CodeCommit mirror repo here (recommend matching your external repo)
-                # Leave empty if you use Github or your repository is in CodeCommit already
+                # Leave empty if you use CodeConnections or your repository is in CodeCommit already
                 CODECOMMIT_MIRROR_REPOSITORY_NAME: 'aws-insurancelake-infrastructure',
 
                 # This is used in the Logical Id of CloudFormation resources.
@@ -116,19 +108,22 @@ def get_local_configuration(environment: str, local_mapping: dict = None) -> dic
             DEV: {
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
-                # VPC_CIDR: '10.20.0.0/24',
+                LINEAGE: True,
+                # VPC_CIDR: '10.20.0.0/22',
                 CODE_BRANCH: 'develop',
             },
             TEST: {
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
-                # VPC_CIDR: '10.10.0.0/24',
+                LINEAGE: True,
+                # VPC_CIDR: '10.10.0.0/22',
                 CODE_BRANCH: 'test',
             },
             PROD: {
                 ACCOUNT_ID: active_account_id,
                 REGION: 'us-east-2',
-                # VPC_CIDR: '10.0.0.0/24',
+                LINEAGE: True,
+                # VPC_CIDR: '10.0.0.0/22',
                 CODE_BRANCH: 'main',
             }
         }
@@ -188,15 +183,20 @@ def get_environment_configuration(environment: str, local_mapping: dict = None) 
         S3_RAW_BUCKET: f'{environment}CollectBucketName',
         S3_CONFORMED_BUCKET: f'{environment}CleanseBucketName',
         S3_PURPOSE_BUILT_BUCKET: f'{environment}ConsumeBucketName',
+        CROSS_ACCOUNT_DYNAMODB_ROLE: f'{environment}CrossAccountDynamoDbRoleArn',
+        STATE_MACHINE: f'{environment}StepFunctionsStateMachineName',
+        NOTIFICATION_TOPIC: f'{environment}EtlNotificationSnsTopicName',
     }
 
-    return {**cloudformation_output_mapping, **get_local_configuration(environment, local_mapping = local_mapping)}
+    return {
+        **cloudformation_output_mapping,
+        **get_local_configuration(environment, local_mapping=local_mapping)
+    }
 
 
 def get_all_configurations() -> dict:
     """Returns a dict mapping of configurations for all environments.
-    These keys correspond to static values, CloudFormation outputs, and Secrets Manager
-    (passwords only) records.
+    These keys correspond to static values, stack names, and CloudFormation outputs
 
     Returns
     -------
@@ -206,7 +206,6 @@ def get_all_configurations() -> dict:
     return {
         DEPLOYMENT: {
             ENVIRONMENT: DEPLOYMENT,
-            GITHUB_TOKEN: '/InsuranceLake/GitHubToken',
             **get_local_configuration(DEPLOYMENT),
         },
         DEV: get_environment_configuration(DEV),
