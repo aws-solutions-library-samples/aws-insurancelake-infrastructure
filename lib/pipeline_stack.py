@@ -113,7 +113,7 @@ class PipelineStack(cdk.Stack):
                 input=self.get_codepipeline_source(),
                 commands=[
                     'npm install -g aws-cdk',
-                    'pip install --upgrade pip --root-user-action=ignore'
+                    'pip install --upgrade pip --root-user-action=ignore',
                     'pip install -r requirements.txt --root-user-action=ignore',
                     'cdk synth'
                 ],

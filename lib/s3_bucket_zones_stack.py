@@ -244,7 +244,7 @@ class S3BucketZonesStack(cdk.Stack):
                     ]
                 )
             ]
-        bucket = s3.Bucket(
+        return s3.Bucket(
             self,
             id=logical_id,
             access_control=s3.BucketAccessControl.PRIVATE,
@@ -262,21 +262,6 @@ class S3BucketZonesStack(cdk.Stack):
             server_access_logs_bucket=access_logs_bucket,
             server_access_logs_prefix=f'{bucket_name}-',
         )
-        bucket.add_to_resource_policy(
-            iam.PolicyStatement(
-                sid='OnlyAllowSecureTransport',
-                effect=iam.Effect.DENY,
-                principals=[iam.AnyPrincipal()],
-                actions=[
-                    's3:GetObject',
-                    's3:PutObject',
-                ],
-                resources=[f'{bucket.bucket_arn}/*'],
-                conditions={'Bool': {'aws:SecureTransport': 'false'}}
-            )
-        )
-
-        return bucket
 
     def create_access_logs_bucket(self, logical_id: str, bucket_name: str) -> s3.Bucket:
         """Creates an Amazon S3 bucket to store S3 server access logs. It attaches bucket policy
